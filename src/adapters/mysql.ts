@@ -9,6 +9,8 @@ interface TableInfo {
   createTable: string
 }
 
+export const mysqlProtocol = 'mysql://'
+
 export function mysqlDatabase(url: string): ReadWriteDb<TableInfo, any> {
   const client = mysql.createConnection(url)
 
@@ -20,87 +22,83 @@ export function mysqlDatabase(url: string): ReadWriteDb<TableInfo, any> {
         if (error) {
           reject(error)
         } else {
-          resolve([columns, fields])
+          resolve([columns, fields || []])
         }
       })
     })
   }
 
-  const findInBatches = (tableName: string, hasId: boolean) => (query: string = '') => ({
-    async *[Symbol.asyncIterator]() {
-      let lastId = 0
-      let done = false
+  const findInBatches =
+    (tableName: string, hasId: boolean) =>
+    (query: string = '') => ({
+      async *[Symbol.asyncIterator]() {
+        let lastId = 0
+        let done = false
 
-      while (!done) {
-        const idQuery = hasId ? `id > ${lastId}` : '1'
+        while (!done) {
+          const idQuery = hasId ? `id > ${lastId}` : '1'
 
-        const [rows] = await exec(
-          `SELECT * FROM ${tableName} WHERE (${query || '1'}) AND ${idQuery}
+          const [rows] = await exec(
+            `SELECT * FROM ${tableName} WHERE (${query || '1'}) AND ${idQuery}
             LIMIT ${FIND_IN_BATCHES_LIMIT}`
-        )
+          )
 
-        if (rows.length) {
-          lastId = rows[rows.length - 1].id
+          if (rows.length) {
+            lastId = rows[rows.length - 1].id
 
-          yield {
-            startId: rows[0].id || 'all',
-            endId: rows[rows.length - 1].id || 'all',
-            items: rows.map((row: any) => ({ ...row }))
+            yield {
+              startId: rows[0].id || 'all',
+              endId: rows[rows.length - 1].id || 'all',
+              items: rows.map((row: any) => ({ ...row }))
+            }
+          }
+
+          if (!rows.length || !hasId) {
+            done = true
           }
         }
+      }
+    })
 
-        if (!rows.length || !hasId) {
-          done = true
+  const replaceItems =
+    (tableName: string, columnNames: string[]) =>
+    async ({ startId, endId, items }: { startId: any; endId: any; items: any[] }) => {
+      const columns = columnNames.map((columnName) => `\`${columnName}\``).join(',')
+      const placeholders = items
+        .map(
+          (row) =>
+            `(${Object.values(row)
+              .map(() => '?')
+              .join(',')})`
+        )
+        .join(',')
+      const values = items.reduce((values, row) => values.concat(Object.values(row)), [])
+      const duplicateUpdates = columnNames
+        .filter((columnName) => columnName !== 'id')
+        .map((columnName) => `\`${columnName}\` = VALUES(\`${columnName}\`)`)
+        .join(',')
+
+      try {
+        if (columnNames.includes('id')) {
+          await exec(`DELETE FROM ${tableName} WHERE id >= ? AND id <= ? AND id NOT IN (?)`, [
+            startId,
+            endId,
+            items.map((item) => item.id)
+          ])
+        } else {
+          await exec(`DELETE FROM ${tableName}`)
         }
-      }
-    }
-  })
 
-  const replaceItems = (tableName: string, columnNames: string[]) => async ({
-    startId,
-    endId,
-    items
-  }: {
-    startId: any
-    endId: any
-    items: any[]
-  }) => {
-    const columns = columnNames.map((columnName) => `\`${columnName}\``).join(',')
-    const placeholders = items
-      .map(
-        (row) =>
-          `(${Object.values(row)
-            .map(() => '?')
-            .join(',')})`
-      )
-      .join(',')
-    const values = items.reduce((values, row) => values.concat(Object.values(row)), [])
-    const duplicateUpdates = columnNames
-      .filter((columnName) => columnName !== 'id')
-      .map((columnName) => `\`${columnName}\` = VALUES(\`${columnName}\`)`)
-      .join(',')
-
-    try {
-      if (columnNames.includes('id')) {
-        await exec(`DELETE FROM ${tableName} WHERE id >= ? AND id <= ? AND id NOT IN (?)`, [
-          startId,
-          endId,
-          items.map((item) => item.id)
-        ])
-      } else {
-        await exec(`DELETE FROM ${tableName}`)
-      }
-
-      await exec(
-        `INSERT INTO ${tableName} (${columns}) VALUES ${placeholders}
+        await exec(
+          `INSERT INTO ${tableName} (${columns}) VALUES ${placeholders}
           ON DUPLICATE KEY UPDATE ${duplicateUpdates}`,
-        values
-      )
-    } catch (e) {
-      console.log('ERROR:', e)
-      throw e
+          values
+        )
+      } catch (e) {
+        console.log('ERROR:', e)
+        throw e
+      }
     }
-  }
 
   const getForeignKeyConstraints = async () => {
     const [[{ 'DATABASE()': db }]] = await exec('SELECT DATABASE()')
@@ -153,10 +151,14 @@ export function mysqlDatabase(url: string): ReadWriteDb<TableInfo, any> {
       })
 
       if (orderedTables.length === oldCount) {
-        const remainingTables = tableNames.filter((name) => !orderedTables.includes(name)).map(name => `${name} depends on ${dependencies[name]?.join('+')}`)
+        const remainingTables = tableNames
+          .filter((name) => !orderedTables.includes(name))
+          .map((name) => `${name} depends on ${dependencies[name]?.join('+')}`)
 
         throw new Error(
-          `Circular dependency detected: Couldn't resolve dependencies: ${remainingTables.join(', ')}`
+          `Circular dependency detected: Couldn't resolve dependencies: ${remainingTables.join(
+            ', '
+          )}`
         )
       }
     }

@@ -1,29 +1,52 @@
 import { mapValues } from 'lodash'
 import {
-  CollectionOptions, ReadableCollection, ReadableDb, ReadWriteCollection, ReadWriteDb
+  CollectionOptions,
+  ReadableCollection,
+  ReadableDb,
+  ReadWriteCollection,
+  ReadWriteDb
 } from './types'
 
-export default async function sync<CollectionType, ItemType extends object>({
-  from,
-  to,
-  collectionOptions
-}: {
+export interface SyncOptions<CollectionType, ItemType extends object, StateType = {}> {
   from: ReadableDb<CollectionType, ItemType>
   to: ReadWriteDb<CollectionType, ItemType>
   collectionOptions: { [name: string]: CollectionOptions }
-}) {
+  beforeSync?: (state: StateType) => void | Promise<void>
+  afterSync?: (state: StateType) => void | Promise<void>
+}
+
+export default async function sync<CollectionType, ItemType extends object, StateType = {}>({
+  from,
+  to,
+  collectionOptions,
+  beforeSync,
+  afterSync
+}: SyncOptions<CollectionType, ItemType, StateType>) {
+  const state: any = {}
+
   try {
+    await beforeSync?.(state)
+
     console.log(`Starting sync.\n  From: ${from.describe()}\n  To: ${to.describe()}`)
 
     await Promise.all([from.connect(), to.connect()])
+
+    console.log('Fetching collection info ...')
 
     let [fromDbCollections, toDbCollections] = await Promise.all([
       from.getCollections(),
       to.getCollections()
     ])
 
-    if (!fromDbCollections.every(collection => collectionOptions[collection.name])) {
-      throw new Error('Not all collections have been configured in sync options')
+    const missingCollections = fromDbCollections.filter(
+      (collection) => !collectionOptions[collection.name]
+    )
+    if (missingCollections.length) {
+      throw new Error(
+        `Not all collections have been configured in sync options. Unset collections: ${missingCollections
+          .map((collection) => collection.name)
+          .join(',')}`
+      )
     }
 
     fromDbCollections = fromDbCollections.filter(({ name }) => !collectionOptions[name]?.skip)
@@ -41,6 +64,8 @@ export default async function sync<CollectionType, ItemType extends object>({
     console.log('ERROR', e)
   } finally {
     await Promise.all([from.close(), to.close()])
+
+    await afterSync?.(state)
   }
 }
 
@@ -93,7 +118,7 @@ async function syncItems<CollectionType, ItemType extends object>({
   const collectionsToUpdate = collections
     .filter(({ name }) => !collectionOptions[name]?.skip)
     .map((collection) => ({
-      from: fromDbCollections.find((other) => collection.name === other.name),
+      from: fromDbCollections.find((other) => collection.name === other.name)!,
       to: collection,
       options: collectionOptions[collection.name] || {}
     }))
