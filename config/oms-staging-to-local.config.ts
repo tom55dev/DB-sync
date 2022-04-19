@@ -38,20 +38,12 @@ const config: SyncOptions<any, any, any> = {
     addon_order_items: {},
     addon_products: {},
     addon_renewals: {},
-    addons: {
-      transformFields: {
-        user_id: () => 1
-      }
-    },
+    addons: {},
     ar_internal_metadata: {},
     automated_notes: {},
     box_item_products: {},
     box_items: {},
-    boxes: {
-      transformFields: {
-        user_id: () => 1
-      }
-    },
+    boxes: {},
     brand_shipping_method_mappings: {},
     comments: {},
     country_mappings: {},
@@ -72,22 +64,14 @@ const config: SyncOptions<any, any, any> = {
     order_shipments: {},
     orders: {},
     plan_types: {},
-    product_deliveries: {
-      transformFields: {
-        user_id: () => 1
-      }
-    },
+    product_deliveries: {},
     product_delivery_items: {},
     product_invoice_line_items: {},
     product_invoices: {},
     product_request_items: {},
     product_requests: {},
     product_suppliers: {},
-    product_uploads: {
-      transformFields: {
-        user_id: () => 1
-      }
-    },
+    product_uploads: {},
     product_variants: {},
     products: {},
     sanity_checks: {},
