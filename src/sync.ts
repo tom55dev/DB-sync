@@ -142,7 +142,7 @@ async function syncCollection<CollectionType, ItemType extends object>({
       mapValues(item, (value, name) => {
         const transformer = options.transformFields?.[name] || ((value) => value)
 
-        return transformer(value)
+        return transformer(value, item)
       })
     )
 

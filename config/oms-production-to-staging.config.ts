@@ -118,7 +118,14 @@ const config: SyncOptions<any, any, any> = {
     sources: {},
     subscription_shipping_fees: {},
     subscriptions: { skip: true },
-    suppliers: {},
+    suppliers: {
+      transformFields: {
+        contact_person: (_, item) => `鈴木${item.id} 太郎`,
+        email: (_, item) => `dev+supplier${item.id}@movefast.xyz`,
+        company_name: (_, item) => `㈱カンパニー${item.id}`,
+        phone: () => '080-1111-1111'
+      }
+    },
     taggings: { skip: true },
     tags: { skip: true },
     tokyo_catch_order_boxes: { skip: true },

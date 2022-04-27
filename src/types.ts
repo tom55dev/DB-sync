@@ -2,7 +2,7 @@ export interface CollectionOptions {
   query?: any
   skip?: boolean
   transformFields?: {
-    [name: string]: (value: any) => any
+    [name: string]: (value: any, item: any) => any
   }
 }
 
