@@ -9,7 +9,7 @@ const config: SyncOptions<any, any, any> = {
   ),
 
   to: mysqlDatabase(
-    `mysql://root:@localhost/oms_dev`
+    `mysql://root:@localhost/oms-development`
   ),
 
   async beforeSync(state) {
@@ -115,6 +115,11 @@ const config: SyncOptions<any, any, any> = {
     tokyo_catch_tracking_numbers: {},
     tokyo_catch_won_prizes: {},
     tracking_numbers: {},
+    free_shipping_configs: {},
+    shopify_free_shipping_configs: {},
+    box_item_accessories: {},
+    delivery_plan_batches: {},
+    planned_batch_items: {},
     users: {
       skip: false,
       transformFields: {
