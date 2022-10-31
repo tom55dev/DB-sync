@@ -9,7 +9,7 @@ const config: SyncOptions<any, any, any> = {
   ),
 
   to: mysqlDatabase(
-    `mysql://root:@localhost/oms-development`
+    `mysql://root:@localhost/oms_dev`
   ),
 
   async beforeSync(state) {
