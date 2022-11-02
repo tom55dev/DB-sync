@@ -134,6 +134,11 @@ const config: SyncOptions<any, any, any> = {
     tokyo_catch_tracking_numbers: { skip: true },
     tokyo_catch_won_prizes: { skip: true },
     tracking_numbers: { skip: true },
+    free_shipping_configs: {},
+    shopify_free_shipping_configs: {},
+    box_item_accessories: { skip:true },
+    delivery_plan_batches: { skip: true },
+    planned_batch_items: { skip:true },
     users: { skip: true }
   }
 }
