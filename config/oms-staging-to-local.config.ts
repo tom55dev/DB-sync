@@ -120,6 +120,9 @@ const config: SyncOptions<any, any, any> = {
     box_item_accessories: {},
     delivery_plan_batches: {},
     planned_batch_items: {},
+    shipping_methods: {},
+    shipping_method_fee_schedules: {},
+    shipping_method_fees: {},
     users: {
       skip: false,
       transformFields: {

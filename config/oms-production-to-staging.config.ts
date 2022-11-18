@@ -62,6 +62,8 @@ const config: SyncOptions<any, any, any> = {
       }
     },
     brand_shipping_method_mappings: {},
+    bulk_actions: {},
+    bulk_action_items: { skip:  true },
     comments: { skip: true },
     country_mappings: {},
     credit_notes: { skip: true },
@@ -80,6 +82,8 @@ const config: SyncOptions<any, any, any> = {
     order_shipment_entries: { skip: true },
     order_shipments: { skip: true },
     orders: { skip: true },
+    permissions: {},
+    permittings: {},
     plan_types: {},
     product_deliveries: {
       transformFields: {
@@ -99,6 +103,7 @@ const config: SyncOptions<any, any, any> = {
     },
     product_variants: {},
     products: {},
+    roles: {},
     sanity_checks: { skip: true },
     sanity_problem_sources: { skip: true },
     sanity_problems: { skip: true },
@@ -112,6 +117,9 @@ const config: SyncOptions<any, any, any> = {
     shipment_receipts: { skip: true },
     shipments: { skip: true },
     shipping_method_mappings: {},
+    shipping_methods: {},
+    shipping_method_fee_schedules: {},
+    shipping_method_fees: {},
     shopify_customers: { skip: true },
     shopify_line_items: { skip: true },
     shopify_order_refunds: { skip: true },
