@@ -63,7 +63,7 @@ const config: SyncOptions<any, any, any> = {
     },
     brand_shipping_method_mappings: {},
     bulk_actions: {},
-    bulk_action_items: {},
+    bulk_action_items: { skip:  true },
     comments: { skip: true },
     country_mappings: {},
     credit_notes: { skip: true },
