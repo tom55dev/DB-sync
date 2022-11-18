@@ -13,19 +13,27 @@ const config: SyncOptions<any, any, any> = {
   ),
 
   async beforeSync(state) {
-    state.fromRule = await allowLocalIpAccess({
-      hostname: 'movefast-llc.cmvphaeswalt.us-east-1.rds.amazonaws.com',
-      port: 3306
-    })
-    state.toRule = await allowLocalIpAccess({
-      hostname: 'mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com',
-      port: 3306
-    })
+    try {
+      state.fromRule = await allowLocalIpAccess({
+        hostname: 'movefast-llc.cmvphaeswalt.us-east-1.rds.amazonaws.com',
+        port: 3306
+      })
+      state.toRule = await allowLocalIpAccess({
+        hostname: 'mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com',
+        port: 3306
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
 
   async afterSync(state) {
-    await denyLocalIpAccess(state.fromRule)
-    await denyLocalIpAccess(state.toRule)
+    try {
+      await denyLocalIpAccess(state.fromRule)
+      await denyLocalIpAccess(state.toRule)
+    } catch (e) {
+      console.error(e)
+    }
   },
 
   collectionOptions: {
