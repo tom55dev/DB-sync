@@ -62,16 +62,14 @@ const config: SyncOptions<any, any, any> = {
       }
     },
     brand_shipping_method_mappings: {},
-    bulk_actions: {},
-    bulk_action_items: { skip:  true },
+    bulk_actions: { skip: true },
+    bulk_action_items: { skip: true },
     comments: { skip: true },
     country_mappings: {},
     credit_notes: { skip: true },
     customers: { skip: true },
     data_exports: { skip: true },
     dhl_fuel_surcharges: {},
-    dhl_invoice_uploads: {},
-    ecms_invoice_uploads: {},
     invoice_coupons: { skip: true },
     invoice_disputes: { skip: true },
     invoices: { skip: true },
@@ -82,8 +80,8 @@ const config: SyncOptions<any, any, any> = {
     order_shipment_entries: { skip: true },
     order_shipments: { skip: true },
     orders: { skip: true },
-    permissions: {},
-    permittings: {},
+    permissions: { skip: true },
+    permittings: { skip: true },
     plan_types: {},
     product_deliveries: {
       transformFields: {
@@ -92,9 +90,17 @@ const config: SyncOptions<any, any, any> = {
     },
     product_delivery_items: {},
     product_invoice_line_items: {},
-    product_invoices: {},
+    product_invoices: {
+      transformFields: {
+        paid_by_id: (value) => (value ? 1 : null)
+      }
+    },
     product_request_items: {},
-    product_requests: {},
+    product_requests: {
+      transformFields: {
+        requester_id: () => 1
+      }
+    },
     product_suppliers: {},
     product_uploads: {
       transformFields: {
@@ -102,8 +108,12 @@ const config: SyncOptions<any, any, any> = {
       }
     },
     product_variants: {},
-    products: {},
-    roles: {},
+    products: {
+      transformFields: {
+        creator_id: () => 1
+      }
+    },
+    roles: { skip: true },
     sanity_checks: { skip: true },
     sanity_problem_sources: { skip: true },
     sanity_problems: { skip: true },
@@ -113,6 +123,7 @@ const config: SyncOptions<any, any, any> = {
     shipment_components: { skip: true },
     shipment_events: { skip: true },
     shipment_invoice_images: { skip: true },
+    shipment_invoice_uploads: { skip: true },
     shipment_invoices: { skip: true },
     shipment_receipts: { skip: true },
     shipments: { skip: true },
@@ -152,9 +163,9 @@ const config: SyncOptions<any, any, any> = {
     tracking_numbers: { skip: true },
     free_shipping_configs: {},
     shopify_free_shipping_configs: {},
-    box_item_accessories: { skip:true },
+    box_item_accessories: { skip: true },
     delivery_plan_batches: { skip: true },
-    planned_batch_items: { skip:true },
+    planned_batch_items: { skip: true },
     users: { skip: true }
   }
 }

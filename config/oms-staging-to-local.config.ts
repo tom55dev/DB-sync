@@ -8,9 +8,7 @@ const config: SyncOptions<any, any, any> = {
     `mysql://movefast:${process.env.STAGING_RDS_ROOT_PASSWORD}@mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com:3306/oms_staging`
   ),
 
-  to: mysqlDatabase(
-    `mysql://root:@localhost/oms_dev`
-  ),
+  to: mysqlDatabase(`mysql://root:@localhost/oms_dev`),
 
   async beforeSync(state) {
     try {
@@ -53,8 +51,6 @@ const config: SyncOptions<any, any, any> = {
     customers: {},
     data_exports: {},
     dhl_fuel_surcharges: {},
-    dhl_invoice_uploads: {},
-    ecms_invoice_uploads: {},
     invoice_coupons: {},
     invoice_disputes: {},
     invoices: {},
@@ -88,6 +84,7 @@ const config: SyncOptions<any, any, any> = {
     shipment_components: {},
     shipment_events: {},
     shipment_invoice_images: {},
+    shipment_invoice_uploads: {},
     shipment_invoices: {},
     shipment_receipts: {},
     shipments: {},
@@ -127,7 +124,7 @@ const config: SyncOptions<any, any, any> = {
       skip: false,
       transformFields: {
         // password: kokoroda
-        encrypted_password: () => "$2a$11$xLlTmByr6signynyPCofs.TG1SP06OX2WjL5pRtRk5SdgjqhMcRly"
+        encrypted_password: () => '$2a$11$xLlTmByr6signynyPCofs.TG1SP06OX2WjL5pRtRk5SdgjqhMcRly'
       }
     }
   }
