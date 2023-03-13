@@ -120,6 +120,7 @@ const config: SyncOptions<any, any, any> = {
     shipping_methods: {},
     shipping_method_fee_schedules: {},
     shipping_method_fees: {},
+    shipment_management_sheet_uploads: { skip: true },
     users: {
       skip: false,
       transformFields: {

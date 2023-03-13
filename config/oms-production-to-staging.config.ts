@@ -166,6 +166,7 @@ const config: SyncOptions<any, any, any> = {
     box_item_accessories: { skip: true },
     delivery_plan_batches: { skip: true },
     planned_batch_items: { skip: true },
+    shipment_management_sheet_uploads: { skip: true },
     users: { skip: true }
   }
 }
