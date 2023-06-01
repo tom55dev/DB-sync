@@ -167,6 +167,8 @@ const config: SyncOptions<any, any, any> = {
     delivery_plan_batches: { skip: true },
     planned_batch_items: { skip: true },
     shipment_management_sheet_uploads: { skip: true },
+    versions: { skip: true },
+    yu_pri_r_csv_uploads: { skip: true},
     users: { skip: true }
   }
 }
