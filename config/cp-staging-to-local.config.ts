@@ -57,6 +57,14 @@ const config: SyncOptions<any, any, any> = {
     tracking_numbers: {},
     triggered_rewards: {},
     waitlist_items: {},
+    private_beta_invitations: {},
+    special_offer_notifications: {},
+    fcm_tokens: {},
+    minimum_amounts: {},
+    pending_coins: {},
+    search_keywords: {},
+    tags: {},
+    ticket_attributes: {},
     users: {
       skip: false,
       transformFields: {
