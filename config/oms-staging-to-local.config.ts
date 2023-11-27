@@ -123,6 +123,9 @@ const config: SyncOptions<any, any, any> = {
     shipment_management_sheet_uploads: { skip: true },
     versions: { skip: true },
     yu_pri_r_csv_uploads: { skip: true},
+    amazon_bundles: {skip: true},
+    bundle_product_variants: {skip: true},
+    shopify_product_type_settings: {skip: true},
     users: {
       skip: false,
       transformFields: {
