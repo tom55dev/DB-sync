@@ -4,8 +4,8 @@ run-name: Deploy ${{ github.event.inputs.branch_or_tag }} to ${{ github.event.in
 on:
   workflow_dispatch:
     inputs:
-      apps:
-        description: 'Apps to sync'
+      app:
+        description: 'App to sync'
         required: true
         default: cp
         type: choice
@@ -30,3 +30,44 @@ on:
         options:
           - staging
           - development
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+  env:
+    PRODUCTION_RDS_SYNCER_PASSWORD: ${{ secrets.PRODUCTION_RDS_SYNCER_PASSWORD }}
+    STAGING_RDS_ROOT_PASSWORD: ${{ secrets.STAGING_RDS_ROOT_PASSWORD }}
+
+  steps:
+    - name: Job Arguments
+      run: |
+        echo "App to sync: ${{ github.event.inputs.app }}"
+        echo "From environment: ${{ github.event.inputs.from_environment }}"
+        echo "To environment: ${{ github.event.inputs.to_environment }}"
+
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+        cache: 'yarn'
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Configure SSH Agent
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.GH_BOT_SSH_PRIVATE_KEY }}
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Run sync
+      run: |
+        yarn sync config/${{ github.event.inputs.app }}-${{ github.event.inputs.from_environment }}-to-${{ github.event.inputs.to_environment }}.config.ts
