@@ -8,7 +8,9 @@ const config: SyncOptions<any, any, any> = {
     `mysql://movefast:${process.env.STAGING_RDS_ROOT_PASSWORD}@mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com:3306/customer_portal_staging`
   ),
 
-  to: mysqlDatabase(`mysql://root:@localhost/tokyotreat_cp_dev`),
+  to: mysqlDatabase(
+    `mysql://movefast:${process.env.STAGING_RDS_ROOT_PASSWORD}@mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com:3306/customer_portal_development`
+  ),
 
   async beforeSync(state) {
     try {
