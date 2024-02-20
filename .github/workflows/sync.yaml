@@ -1,4 +1,4 @@
-name: Sync Staging To Development
+name: Sync Environments
 run-name: Deploy ${{ github.event.inputs.branch_or_tag }} to ${{ github.event.inputs.apps }} ${{ github.event.inputs.environment }}
 
 on:
