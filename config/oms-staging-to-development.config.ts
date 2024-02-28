@@ -5,7 +5,7 @@ import { allowLocalIpAccess, denyLocalIpAccess } from './utils/aws'
 
 const config: SyncOptions<any, any, any> = {
   from: mysqlDatabase(
-    `mysql://syncer:${process.env.PRODUCTION_RDS_SYNCER_PASSWORD}@movefast-llc.cmvphaeswalt.us-east-1.rds.amazonaws.com:3306/oms_staging`
+    `mysql://movefast:${process.env.STAGING_RDS_ROOT_PASSWORD}@mysql-staging.cmvphaeswalt.us-east-1.rds.amazonaws.com:3306/oms_staging`
   ),
 
   to: mysqlDatabase(
@@ -165,10 +165,12 @@ const config: SyncOptions<any, any, any> = {
     shipment_management_sheet_uploads: { skip: true },
     versions: { skip: true },
     yu_pri_r_csv_uploads: { skip: true},
-    users: { skip: true },
+    users: { skip: false },
     amazon_bundles: {skip: true},
     bundle_product_variants: {skip: true},
-    shopify_product_type_settings: {skip: true}
+    shopify_product_type_settings: {skip: true},
+    nutrition_facts_settings: { skip: true },
+    nutrition_facts: { skip: true },
   }
 }
 
