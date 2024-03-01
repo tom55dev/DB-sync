@@ -1,5 +1,5 @@
 name: Sync Environments
-run-name: Deploy ${{ github.event.inputs.branch_or_tag }} to ${{ github.event.inputs.apps }} ${{ github.event.inputs.environment }}
+run-name: Sync ${{ github.event.inputs.app }} from ${{ github.event.inputs.from_environment }} to ${{ github.event.inputs.to_environment}}
 
 on:
   workflow_dispatch:
